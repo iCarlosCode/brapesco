@@ -83,7 +83,7 @@ class Conta {
             System.out.printf("Saldo insuficiente! Você só pode sacar até R$%.2f%n", saldo);
             return false;
 
-        }else if(saldo > valor) {
+        }else if(saldo >= valor) {
             saldo -= valor;
             //Registro de operações
 
