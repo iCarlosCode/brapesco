@@ -88,6 +88,9 @@ public class SistemaBancario {
             System.out.println("4. Deletar Conta");
             System.out.println("5. Detalhar conta (Busca Linear)");
             System.out.println("6. Detalhar conta (Busca Binária)");
+            System.out.println("7. Listar árvore agência-contas");
+            System.out.println("8. Criar agência");
+            System.out.println("9. Listar agências");
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
 
@@ -110,11 +113,19 @@ public class SistemaBancario {
                     Banco.deletarConta(scanner);
                     break;
                 case 5:
-                    
                     Banco.detalharContaBuscaLinear(scanner);
                     break;
                 case 6:
                     Banco.detalharContaBuscaBinaria(scanner);
+                    break;
+                case 7:
+                    Banco.listarAgenciasEContas();
+                    break;
+                case 8:
+                    Banco.criarAgencias();
+                    break;
+                case 9:
+                    Banco.listarAgencias();
                     break;
                 case 0:
                     voltar = true;

@@ -2,8 +2,10 @@ import java.util.*;
 
 public class Banco {
     private static List<Conta> contas = new ArrayList<>();
+    private static List<Agencia> agencias = new ArrayList<>();
     private static Queue<Transferencia> filaTransferencias = new LinkedList<>();
     private static int sizeTracking = 0; 
+    private static int sizeAgenciasTracking = 0; 
     private static final int QTD_ACCOUNTS = 10;
 
     public static void adicionarTransferenciaNaFila(int numeroOrigem, Scanner scanner) {
@@ -65,22 +67,52 @@ public class Banco {
     }
         
     protected static void criarContasIniciais() { //ok
+        agencias.add(new Agencia(sizeAgenciasTracking++));
+        
         for (int i = 1; i <= QTD_ACCOUNTS; i++) {
             Conta conta = new Conta(i, "123", 100,"Fulano");
             contas.add(conta);
+
+            agencias.get(0).getContas().add(conta);
         }
     }
+    protected static void criarAgencias() { 
+        agencias.add(new Agencia(sizeAgenciasTracking++));
+        System.out.println("Agencia " + agencias.get(sizeAgenciasTracking-1).getCode() + " foi criada com sucesso!");
+    }
+    
+    protected static void listarAgencias() { 
+        System.out.println("Banco");
+        for (Agencia agencia : agencias) {
+            System.out.println("    " + agencia.getCode());
+        }
+    }
+
     protected static void criarConta(Scanner scanner) { //ok
         int numero = 20240 + sizeTracking + 1;
         sizeTracking++;
-
+        int agencia;
         System.out.print("Digite o nome do Titular da conta: ");
         String titular = scanner.nextLine();
         
         System.out.print("Digite a senha da conta: ");
         String senha = scanner.nextLine();
+        Conta conta = new Conta(numero, senha, titular);
+        contas.add(conta);
 
-        contas.add(new Conta(numero, senha, titular));
+        while (true) {
+            System.out.print("Digite o número da agência: ");
+            agencia = scanner.nextInt();
+        
+            if (agencia >= 0 && agencia <= sizeAgenciasTracking) {
+                agencias.get(agencia).getContas().add(conta);
+                break;
+            }
+            else {
+                System.out.print("Nenhuma agência com esse número foi encontrada!");
+            }
+        }
+
         System.out.println("Conta criada com sucesso! Número da conta: " + numero);
     }
     
@@ -129,6 +161,16 @@ public class Banco {
             System.out.println("Conta não encontrada.");
         
         } else if(conta.getSaldo() <= 0){
+            for (int i = 0; i < sizeAgenciasTracking; i++) {
+                Agencia agencia = agencias.get(i);
+                for (int j = 0; j < agencia.getContas().size(); j++) {
+                    Conta c = agencia.getContas().get(j);
+                    if (c.getNumero() == numeroConta) {
+                        agencia.getContas().remove(j);
+                    }
+                }
+            }
+
             contas.remove(conta);
             System.out.println("Conta deletada com sucesso!");
         } else {
@@ -149,6 +191,22 @@ public class Banco {
         }
     }
     
+    protected static void listarAgenciasEContas() { // ok
+        System.out.println("\n=== Lista de Agencias e Contas ===");
+        if (contas.isEmpty()) {
+            System.out.println("Nenhuma conta cadastrada.");
+        } else {
+            System.out.println("Banco");
+            for (Agencia agencia: agencias) {
+                System.out.println("    Agência: " + agencia.getCode());
+                
+                for (Conta conta: agencia.getContas()) {
+                    System.out.println("        Conta: " + conta.getNumero());
+                }
+            }
+        }
+    }
+
     protected static Conta buscarContaLinearmente(int numeroConta) { // ok método de busca linear
         for (Conta conta : contas) {
             if (conta.getNumero() == numeroConta) {
